@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/exec/rwp/blob/main/schema/worker-envelope.schema.json",
+  "title": "Draft RWP worker envelope",
+  "type": "object",
+  "required": ["apiVersion", "type", "messageId", "correlationId", "sequence", "sentAt", "payload"],
+  "properties": {
+    "apiVersion": {"const": "workers.monocle.dev/v1"},
+    "type": {"type": "string", "pattern": "^[a-z][a-z0-9.-]{0,127}$"},
+    "messageId": {"type": "string", "format": "uuid"},
+    "correlationId": {"type": "string", "format": "uuid"},
+    "workerId": {"type": "string", "format": "uuid"},
+    "sequence": {"type": "integer", "minimum": 0},
+    "sentAt": {"type": "string", "format": "date-time"},
+    "payload": {"type": "object"}
+  },
+  "additionalProperties": true
+}
