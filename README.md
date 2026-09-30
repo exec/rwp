@@ -25,4 +25,20 @@ Use `wss://` for non-loopback transport. The example never connects to Minecraft
 
 The example does not persist checkpoints or reconnect after a lost socket. A production worker must reconcile unfinished executions and retry unacknowledged reports without repeating game-side effects.
 
+To repeat the Monocle interop check, set `interopPort` and `interopWorkerTokens` in the standalone host's `host-config.json` to enable its loopback-only endpoint. Start the Java example above, then use the host operator API to assign the worker to a crew. Submit this job to `POST /v1/jobs` with a fresh UUID `Idempotency-Key` header, then read `GET /v1/jobs/<job-id>` until its state is `complete`:
+
+```json
+{
+  "id": "<new job UUID>",
+  "crewId": "<ID from GET /v1/crews>",
+  "workerIds": ["<RWP_WORKER_ID>"],
+  "name": "Java Wait interop",
+  "scope": {"server": "play.example.org", "dimension": "minecraft:the_nether"},
+  "action": {"type": "workers.wait.v1", "arguments": {"ticks": 20}},
+  "priority": 0
+}
+```
+
+The scope must match `RWP_SERVER` and `RWP_DIMENSION`. The Java worker completed this path against Monocle's standalone host; this does not establish Minecraft-side execution or reconnect safety.
+
 Licensed under [Apache-2.0](LICENSE). This independent code can be used by GPLv3 clients, including Monocle, without importing Monocle's GPLv3 implementation. See the [Apache Software Foundation's compatibility note](https://www.apache.org/licenses/GPL-compatibility.html).
