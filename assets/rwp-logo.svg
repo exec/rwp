@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 590 160" role="img" aria-labelledby="title desc">
+  <title id="title">RWP</title>
+  <desc id="desc">Redstone Worker Protocol: connected redstone nodes beside an RWP wordmark</desc>
+  <g fill="none" stroke="#c93b46" stroke-width="8" stroke-linecap="round">
+    <path d="M80 15v32m0 66v32M15 80h32m66 0h32"/>
+  </g>
+  <g fill="#c93b46">
+    <rect x="72" y="3" width="16" height="16" rx="3"/>
+    <rect x="72" y="141" width="16" height="16" rx="3"/>
+    <rect x="3" y="72" width="16" height="16" rx="3"/>
+    <rect x="141" y="72" width="16" height="16" rx="3"/>
+    <path d="M80 43 117 80 80 117 43 80Z"/>
+  </g>
+  <path d="M80 64 96 80 80 96 64 80Z" fill="#f5ac4d"/>
+  <g fill="#c93b46" fill-rule="evenodd" transform="translate(204 38) scale(1.3)">
+    <path d="M0 0h45c15 0 23 8 23 22v8c0 11-5 18-15 22l16 28H45L30 53H20v27H0Zm20 18v18h23c4 0 6-2 6-6v-6c0-4-2-6-6-6Z"/>
+    <path d="M79 0h20l12 52 12-40h20l12 40 12-52h20l-21 80h-21l-12-40-12 40h-21Z"/>
+    <path d="M198 0h44c16 0 24 9 24 23v7c0 15-8 24-24 24h-24v26h-20Zm20 18v18h23c4 0 6-2 6-6v-6c0-4-2-6-6-6Z"/>
+  </g>
+</svg>

@@ -1,4 +1,6 @@
-# Redstone Worker Protocol (RWP)
+<p align="center">
+  <img src="assets/rwp-logo.svg" alt="RWP — Redstone Worker Protocol" width="520">
+</p>
 
 RWP is a draft, implementation-neutral way for a host to assign typed work to Minecraft workers and reconcile it after disconnects. This repository contains a small Java 17 library for the current JSON/WebSocket envelope, a runnable Wait-worker example, and a minimal schema. It does **not** contain Monocle or Meteor runtime code.
 
