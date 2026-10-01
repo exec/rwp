@@ -2,7 +2,7 @@
   <img src="assets/rwp-logo.svg" alt="RWP — Redstone Worker Protocol" width="520">
 </p>
 
-# Redstone Worker Protocol
+<h1 align="center">Redstone Worker Protocol</h1>
 
 RWP is a **draft, implementation-neutral protocol** for coordinating Minecraft workers. A coordinator assigns a typed action to a worker; the worker accepts, reports progress and outcome, and reconciles unfinished work after a disconnect. A worker can be a game client, a bot, or another implementation. A coordinator can be a standalone service or live inside a client. Neither must use Monocle.
 
