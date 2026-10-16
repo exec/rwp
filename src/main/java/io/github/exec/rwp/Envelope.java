@@ -16,11 +16,11 @@ import java.util.UUID;
 /** Common JSON frame for the experimental RWP WebSocket binding. Payload rules remain action-specific. */
 public record Envelope(String apiVersion, String type, UUID messageId, UUID correlationId,
                        UUID workerId, long sequence, Instant sentAt, JsonObject payload) {
-    public static final String VERSION = "workers.monocle.dev/v1";
+    public static final String VERSION = "rwp/1-draft", LEGACY_VERSION = "workers.monocle.dev/v1";
     public static final int MAX_FRAME_BYTES = 16_000;
 
     public Envelope {
-        if (!VERSION.equals(apiVersion)) throw new IllegalArgumentException("Unsupported API version");
+        if (!VERSION.equals(apiVersion) && !LEGACY_VERSION.equals(apiVersion)) throw new IllegalArgumentException("Unsupported API version");
         if (type == null || !type.matches("[a-z][a-z0-9.-]{0,127}")) throw new IllegalArgumentException("Invalid message type");
         Objects.requireNonNull(messageId, "messageId");
         Objects.requireNonNull(correlationId, "correlationId");

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/exec/rwp/blob/main/schema/implementation-identity.schema.json",
+  "title": "Draft RWP self-reported software identity",
+  "description": "Display/debug metadata; not authentication, account identity or permission.",
+  "type": "object",
+  "required": ["id", "version"],
+  "properties": {
+    "id": {"type": "string", "maxLength": 128, "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"},
+    "version": {"type": "string", "maxLength": 64, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$"}
+  },
+  "additionalProperties": true
+}

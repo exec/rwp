@@ -5,7 +5,7 @@
   "type": "object",
   "required": ["apiVersion", "type", "messageId", "correlationId", "sequence", "sentAt", "payload"],
   "properties": {
-    "apiVersion": {"const": "workers.monocle.dev/v1"},
+    "apiVersion": {"enum": ["rwp/1-draft", "workers.monocle.dev/v1"]},
     "type": {"type": "string", "pattern": "^[a-z][a-z0-9.-]{0,127}$"},
     "messageId": {"type": "string", "format": "uuid"},
     "correlationId": {"type": "string", "format": "uuid"},

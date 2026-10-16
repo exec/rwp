@@ -1,6 +1,6 @@
 # Current JSON/WebSocket test binding
 
-This document describes what an independent worker can exchange with **Monocle's current standalone coordinator**. It is an interoperability target, **not** the final transport-independent RWP/1 standard. The tested version string is `workers.monocle.dev/v1`; changing it requires coordinated changes at both endpoints. The [draft core](../PROTOCOL.md) explains the semantics that should survive a future binding change.
+This document describes what an independent worker can exchange with **Monocle's current standalone coordinator**. It is an interoperability target, **not** the final transport-independent RWP/1 standard. New peers use `rwp/1-draft`; the coordinator temporarily accepts `workers.monocle.dev/v1` for older workers. The [draft core](../PROTOCOL.md) explains the semantics that should survive a future binding change.
 
 ## Connection and trust boundary
 
@@ -20,7 +20,7 @@ Each application frame is one **text** WebSocket message containing one JSON obj
 
 ```json
 {
-  "apiVersion": "workers.monocle.dev/v1",
+  "apiVersion": "rwp/1-draft",
   "type": "worker.observation",
   "messageId": "95d1d011-dcbf-4e92-8069-fe4640ed8a53",
   "correlationId": "6c6f1973-30ca-47f6-94c4-49ee37e46b9c",
@@ -33,7 +33,7 @@ Each application frame is one **text** WebSocket message containing one JSON obj
 
 | Field | Current binding rule |
 | --- | --- |
-| `apiVersion` | Exactly `workers.monocle.dev/v1`. |
+| `apiVersion` | `rwp/1-draft` for new peers; legacy `workers.monocle.dev/v1` accepted temporarily by Monocle. One session uses one version throughout. |
 | `type` | Lowercase dotted message name; only supported types below are accepted. |
 | `messageId` | Canonical UUID. Reuse it only for an identical durable report retry. |
 | `correlationId` | UUID for tracing a response to a request/report. Do not use it as an authority or deduplication key. |
@@ -51,18 +51,21 @@ The first worker frame must be `session.hello`, sequence `0`, within five second
 ```json
 {
   "workerId": "651be0b7-38fb-4756-a126-a7468d71aefe",
-  "supportedVersions": ["workers.monocle.dev/v1"],
+  "supportedVersions": ["rwp/1-draft"],
+  "implementation": {"id": "org.example.worker", "version": "1.0.0"},
   "capabilities": [{"id": "workers.wait.v1"}],
   "lastHostSequence": 0,
   "lastWorkerSequence": 0
 }
 ```
 
-The worker ID must match the credential. Capability IDs must be unique and match the versioned owner/action shape `owner.action.vN`; advertise only actions actually implemented. The current coordinator accepts up to eight proposed versions and 64 capabilities, but selects only `workers.monocle.dev/v1`. The last-sequence fields are currently checked as nonnegative; **they are not a replay cursor or substitute for `state.reconcile`**.
+The worker ID must match the credential. `implementation` is required for the draft version and contains a bounded software ID and version; it is self-reported display/debugging data, **not** authentication. Legacy peers may omit it. Capability IDs must be unique and match the versioned owner/action shape `owner.action.vN`; advertise only actions actually implemented. The coordinator accepts up to eight proposed versions and 64 capabilities; the hello envelope version must be among those proposed and remains fixed for the session. The last-sequence fields are currently checked as nonnegative; **they are not a replay cursor or substitute for `state.reconcile`**.
 
-The host's first frame is `session.accepted`, sequence `0`, with `sessionId`, chosen `version`, `maxFrameBytes`, `heartbeatSeconds`, `capabilities`, `executionEnabled`, and `extensionRouting`. `heartbeatSeconds` describes the transport's connection-loss setting, **not** a required application heartbeat frame. The WebSocket implementation handles ping/pong. The current coordinator advertises Wait and Travel. A worker can advertise an exact namespaced extension if it implements one.
+The host's first frame is `session.accepted`, sequence `0`, with `sessionId`, chosen `version`, its own `implementation`, `maxFrameBytes`, `heartbeatSeconds`, `capabilities`, `executionEnabled`, and `extensionRouting`. `heartbeatSeconds` describes the transport's connection-loss setting, **not** a required application heartbeat frame. The WebSocket implementation handles ping/pong. The current coordinator advertises Wait and Travel. A worker can advertise an exact namespaced extension if it implements one.
 
 After acceptance, send `worker.observation`, then `state.reconcile`. The host must know a recent world observation before it can assign work. The worker must receive the reconciliation decision before it resumes a saved action. The current host allows at most 64 inbound frames per second per session and closes a connection if its outbound queue reaches 32 frames. Reconnect and reconcile; do not assume a dropped frame was applied.
+
+Software identity IDs match `[a-z0-9]+(?:[.-][a-z0-9]+)*` with a maximum of 128 characters. Versions match `[A-Za-z0-9][A-Za-z0-9._+-]*` with a maximum of 64 characters. The Java `ImplementationIdentity` helper and [identity schema](../schema/implementation-identity.schema.json) describe the same shape. Unknown optional identity fields do not grant capabilities. See [Monocle compatibility](monocle-compatibility.md) for its Follow extension and the separate private highway/stash/kit path.
 
 ## Message catalog
 

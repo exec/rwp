@@ -3,6 +3,7 @@ package io.github.exec.rwp.examples;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.exec.rwp.Envelope;
+import io.github.exec.rwp.ImplementationIdentity;
 import io.github.exec.rwp.WorkerSession;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -48,6 +49,7 @@ public final class WaitWorker implements WebSocket.Listener {
         this.socket = socket;
         JsonObject hello = new JsonObject(); hello.addProperty("workerId", id.toString());
         JsonArray versions = new JsonArray(); versions.add(Envelope.VERSION); hello.add("supportedVersions", versions);
+        hello.add("implementation", new ImplementationIdentity("io.github.exec.rwp.example", "0.2.0").toJson());
         JsonObject capability = new JsonObject(); capability.addProperty("id", "workers.wait.v1");
         JsonArray capabilities = new JsonArray(); capabilities.add(capability); hello.add("capabilities", capabilities);
         hello.addProperty("lastHostSequence", 0); hello.addProperty("lastWorkerSequence", 0);
@@ -76,6 +78,9 @@ public final class WaitWorker implements WebSocket.Listener {
         JsonObject payload = frame.payload();
         switch (frame.type()) {
             case "session.accepted" -> {
+                if (!Envelope.VERSION.equals(payload.get("version").getAsString()))
+                    throw new IllegalArgumentException("Unexpected accepted protocol version");
+                ImplementationIdentity.parse(payload.getAsJsonObject("implementation"));
                 observe();
                 timer.scheduleAtFixedRate(this::observe, 10, 10, TimeUnit.SECONDS);
                 JsonObject reconcile = new JsonObject(); reconcile.addProperty("lastHostSequence", 0);

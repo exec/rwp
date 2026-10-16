@@ -4,7 +4,24 @@ plugins {
 }
 
 group = "io.github.exec"
-version = "0.1.0-SNAPSHOT"
+version = "0.2.0"
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType<Jar>().configureEach { from("LICENSE") }
+
+tasks.register<Zip>("docsZip") {
+    archiveClassifier.set("docs")
+    destinationDirectory.set(layout.buildDirectory.dir("distributions"))
+    from("README.md", "PROTOCOL.md", "CHANGELOG.md", "LICENSE")
+    from("docs") { into("docs") }
+    from("schema") { into("schema") }
+    from("assets") { into("assets") }
+    from("examples") { into("examples") }
+}
 
 repositories { mavenCentral() }
 

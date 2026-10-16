@@ -10,7 +10,7 @@ The scope is a common **communication contract between independently developed c
 
 This repository is meant to be read and challenged by other implementers. It contains a small Java 17 envelope/session library, a JSON envelope schema, and a runnable example worker. It is **not** a complete bot, a job marketplace, a production authentication service, or a declaration that every Minecraft action is portable.
 
-> **Interoperability status:** The only exercised network binding currently uses JSON text frames over WebSocket with `apiVersion: "workers.monocle.dev/v1"`. That identifier, endpoint, and some payload details are a Monocle **test binding**, not a frozen RWP/1 standard. The Java Wait example has completed a job against Monocle's standalone coordinator. Monocle's own game client implements Wait and Travel on this binding. A live independent game-backed implementation has **not** yet been tested.
+> **0.2.0 interoperability status:** The JSON/WebSocket binding uses `apiVersion: "rwp/1-draft"`; Monocle's coordinator temporarily accepts the older `workers.monocle.dev/v1` identifier from existing workers. The endpoint and some payload details remain a **draft test binding**, not frozen RWP/1. The Java Wait example has completed a job against Monocle's standalone coordinator; Monocle's game client implements Wait, Travel and its own `dev.monocle.follow.v1` extension. A live independent game-backed implementation has **not** yet been tested. See the [current implementation matrix](docs/monocle-compatibility.md) and [release changes](CHANGELOG.md).
 
 ## Start here
 
@@ -23,6 +23,7 @@ This repository is meant to be read and challenged by other implementers. It con
 | Add a client-specific job without pretending it is a universal standard | [Extension action guide](docs/extension-actions.md) |
 | Run a first cross-project test and report differences | [Interoperability checklist](docs/interoperability.md) |
 | Decide what should become standard versus remain an extension | [Open design questions](docs/open-questions.md) |
+| See what Monocle currently exposes over RWP versus its private worker transport | [Monocle compatibility](docs/monocle-compatibility.md) |
 
 The [schema](schema/worker-envelope.schema.json) validates common frame fields. It intentionally does **not** validate every action argument or lifecycle payload. Those contracts are described in the guides and must also be checked by each implementation. Schema-valid does not mean authorized, safe, or completed in Minecraft.
 
@@ -49,7 +50,7 @@ The library has one runtime dependency, Gson. It targets Java 17 and can be inst
 ./gradlew publishToMavenLocal
 ```
 
-The published local coordinate is `io.github.exec:rwp:0.1.0-SNAPSHOT`; it has **not** been released to a package registry. Other languages can implement the JSON contract directly without using this library.
+The local Maven coordinate is `io.github.exec:rwp:0.2.0`. Download the Java library, sources, Javadocs and documentation bundle from [GitHub Releases](https://github.com/exec/rwp/releases); there is **no Maven Central/package-registry publication**. The library JAR is not a fat JAR: supply Gson 2.14.0 as documented in the build. Other languages can implement the JSON contract directly without using this library. The library release number is separate from the draft wire identifier `rwp/1-draft`.
 
 The [Wait worker](examples/io/github/exec/rwp/examples/WaitWorker.java) uses Java's built-in WebSocket client. It never connects to Minecraft; its timer is a teaching example, not a production worker. Configure a dedicated test credential on a compatible coordinator, then run:
 

@@ -17,6 +17,8 @@ The terms **MUST**, **SHOULD**, and **MAY** below express proposed requirements 
 
 The coordinator is authoritative for **which job and execution are authorized**. The worker is authoritative only about its own claimed state and observations. A success report does not prove that the Minecraft server accepted a movement, block placement, inventory transfer, or attack. Applications that need stronger proof must define their own verification policy and state what evidence it uses.
 
+Peers may report a software implementation ID and version during the session handshake. This is a self-reported user-agent equivalent for operator visibility and troubleshooting, not a worker identity, credential, or capability grant. The current WebSocket binding sends it as `implementation: {"id": "org.example.worker", "version": "1.0.0"}` in `session.hello` and an analogous object in `session.accepted`.
+
 ## Scope of interoperability
 
 RWP defines how independently built workers and coordinators **communicate about work**: capabilities, scoped assignments, lifecycle reports, cancellation, and reconciliation. It does **not** provide a shared implementation of jobs or translate client-specific modules, setting names, profiles, workflows, or gameplay strategies. A coordinator or integration adapter must map operator intent to an action and arguments that a particular worker actually advertises and understands. Two clients become interchangeable for an action only when they intentionally implement the **same versioned action contract**; similar module names alone are not enough. Communication between separate coordinators is also outside this draft.

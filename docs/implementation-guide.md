@@ -34,7 +34,7 @@ Suppose one job is assigned to two workers. Both receive the same `jobId` but di
 
 An assignment has a `commandId`; an `execution.accepted` includes that same ID. If an assignment is retried, the worker should recognize the command ID and avoid starting a second copy. A cancellation has its own command ID. A worker's `execution.started` report has a `messageId` distinct from the assignment command ID. If the report's acknowledgement is lost, resend the **same report and message ID** with a new session sequence. `correlationId` helps trace related frames but must not be used as an idempotency key.
 
-The current Java `WorkerSession` only generates and checks session sequences. It does not persist a checkpoint, validate a job action, authenticate, reconnect, or deduplicate Minecraft effects.
+The current Java `WorkerSession` generates and checks session sequences and pins the new draft version. It does not persist a checkpoint, validate a job action, authenticate, reconnect, or deduplicate Minecraft effects. `ImplementationIdentity` validates software ID/version metadata separately; that metadata never authenticates the peer.
 
 ## A worker's durable record
 
@@ -107,6 +107,8 @@ RWP core does not require any particular Minecraft job type. These profiles are 
 | `workers.travel.v1` | `scope`, numeric `x`, `y`, `z`, optional `radius` (default 2; current binding accepts 0.15–8). | Reach the destination in the specified world on safe footing without mining or placing blocks. | Re-evaluate current position; do not assume old movement packets landed. The current Monocle coordinator requires a fresh destination observation before it records completion. |
 
 The action IDs and envelopes are candidates for portable profiles, not a commitment that all workers will implement them. A worker should advertise only profiles it actually supports. Travel pathfinding, flight, damage avoidance, and anti-cheat behavior are implementation details unless a later profile explicitly specifies them.
+
+Monocle also implements `dev.monocle.follow.v1` as a client-specific extension, not a third mandatory portable action. See its [current compatibility report](monocle-compatibility.md) for arguments, cancellation and recovery limits. Highway/stash/kit execution still uses its private transport.
 
 ### Extensions
 

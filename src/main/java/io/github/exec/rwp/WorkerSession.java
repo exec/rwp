@@ -27,8 +27,8 @@ public final class WorkerSession {
 
     public synchronized Envelope receive(String json) {
         Envelope frame = Envelope.parse(json);
-        if (!workerId.equals(frame.workerId()) || frame.sequence() != nextInbound)
-            throw new IllegalArgumentException("Host identity or sequence mismatch");
+        if (!Envelope.VERSION.equals(frame.apiVersion()) || !workerId.equals(frame.workerId()) || frame.sequence() != nextInbound)
+            throw new IllegalArgumentException("Host version, identity or sequence mismatch");
         if (nextInbound == Long.MAX_VALUE) throw new IllegalStateException("Session sequence exhausted");
         nextInbound++;
         return frame;

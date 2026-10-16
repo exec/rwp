@@ -13,4 +13,4 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - run: ./gradlew check compileExamplesJava --console=plain
+      - run: ./gradlew check compileExamplesJava assemble docsZip --console=plain

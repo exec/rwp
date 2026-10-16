@@ -6,7 +6,7 @@ This repository is an invitation to test a **small common contract** with a seco
 
 | Question | Current experiment | Why it matters |
 | --- | --- | --- |
-| What is the stable version identifier? | `workers.monocle.dev/v1` is a Monocle binding string. | A neutral protocol should not require another client to claim it is Monocle. Choose a stable RWP identifier only after the first cross-project trial. |
+| What is the stable version identifier? | `rwp/1-draft` is neutral but explicitly provisional; Monocle accepts `workers.monocle.dev/v1` for migration. | Freeze an `rwp/1` contract only after the first cross-project trial. |
 | Is a worker ID the Minecraft account UUID? | Monocle's current test binding uses the profile UUID. | One bot runtime might move accounts or control several; identity, credential scope, and account identity may need separation. |
 | How is a Minecraft server identified? | Worker-reported `server` string plus namespaced `dimension`. | DNS aliases, proxies, singleplayer worlds, and server restarts make string equality weaker than world identity. Do not call it cryptographic proof. |
 | What is a portable action? | Wait and Travel are experimental; extensions use exact owner-namespaced versions. | Over-standardizing highway/mining algorithms would make capable clients appear incompatible; under-specifying Wait/Travel would make results inconsistent. |
@@ -32,7 +32,7 @@ Concrete counterexamples and proposed JSON are more useful than a vote on an abs
 
 ### Versioning and unknown fields
 
-The current envelope requires `workers.monocle.dev/v1` and allows extra JSON properties. We need to decide whether a stable binding negotiates a major protocol version, feature set, or both; what an older peer does with unknown message types; and how extension payload schemas are discovered. Until then, implementers should reject unknown **authority-bearing** messages instead of guessing, but tolerate explicitly optional fields they do not need. Do not silently downgrade an action version.
+The current envelope uses `rwp/1-draft` (or Monocle's temporary legacy alias) and allows extra JSON properties. We need to decide whether a stable binding negotiates a major protocol version, feature set, or both; what an older peer does with unknown message types; and how extension payload schemas are discovered. Until then, implementers should reject unknown **authority-bearing** messages instead of guessing, but tolerate explicitly optional fields they do not need. Do not silently downgrade an action version.
 
 ### Identity and authorization
 
